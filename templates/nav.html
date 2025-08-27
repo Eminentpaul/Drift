@@ -35,8 +35,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- htmx -->
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"></script>
+
 </head>
-<body>
+<body id="body">
 
     <!-- Preloader -->
     <div class="preloader">
@@ -72,7 +75,7 @@
                                         <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                                         <li><a class="dropdown-item" href="notification.html">Notifications</a></li>
                                         <li><a class="dropdown-item" href="send-money.html">Send Money</a></li>
-                                        <li><a class="dropdown-item" href="deposit-money.html">Deposit Money</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'deposit' %}">Deposit Money</a></li>
                                     {% else %}
                                         <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
                                         <li><a class="dropdown-item" href="transactions.html">All Transactions</a></li>
@@ -178,5 +181,34 @@
     <script src="{% static 'assets/js/scrollUp.min.js' %}"></script>
 
     <script src="{% static 'assets/js/script.js' %}"></script>
+
+
+
+
+        <!-- {% csrf_token %} -->
+        <script>
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+
+            document.body.addEventListener('htmx:configRequest', function(evt) {
+                evt.detail.headers['X-CSRFToken'] = csrftoken; // add a new header into the request
+            });
+        </script>
+
 </body>
 </html>

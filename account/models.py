@@ -37,7 +37,7 @@ class Account(models.Model):
     set_amount = models.BooleanField(default=False)
     account_pin = models.IntegerField(null=True, blank=True)
     update = models.DateTimeField(auto_now=True)
-    contributing_amount = models.DecimalField(max_length=12, max_digits=12, default=200.00, decimal_places=2)
+    contributing_amount = models.DecimalField(max_length=12, max_digits=12, decimal_places=2)
 
     class Meta:
         ordering = ['-update']
