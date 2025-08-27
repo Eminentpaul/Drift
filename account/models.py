@@ -9,6 +9,19 @@ ACCOUNT_STATUS = (
     ('in-active', 'In-Active')
 )
 
+STATUS = (
+    ('Success', 'Success'),
+    ('Pending', 'Pending'),
+    ('Failed', 'Failed'),
+)
+
+
+TRANSACTION_TYPE = (
+    ('Deposit', 'Deposit'),
+    ('Widthdrawal', 'Widthdrawal'),
+    # ('Transfer', 'Transfer'),
+)
+
 class Account(models.Model):
     account_id = ShortUUIDField(
         unique=True, length=7, max_length=25, prefix='ADS', alphabet='1234567890')
@@ -43,7 +56,8 @@ class Transaction(models.Model):
         User, on_delete=models.SET_NULL, null=True, related_name='receiver')
     amount = models.DecimalField(
         max_length=12, decimal_places=2, max_digits=12, default=0.00)
-    transaction_status = models.CharField(max_length=20, default='Pending')
+    transaction_status = models.CharField(max_length=20, choices=STATUS, default='Success')
+    transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPE, default='Deposit')
     ref_number = ShortUUIDField(
         unique=True, length=20, max_length=25, prefix='TRN-', alphabet='1234567890')
     counts = models.CharField(max_length=20, default=0)

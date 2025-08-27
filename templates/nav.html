@@ -65,18 +65,21 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dashboard</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="transactions.html">Transactions</a></li>
-                                    <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-                                    <li><a class="dropdown-item" href="notification.html">Notifications</a></li>
-                                    <li><a class="dropdown-item" href="send-money.html">Send Money</a></li>
-                                    <li><a class="dropdown-item" href="send-money-success.html">Send Money Success</a></li>
-                                    <li><a class="dropdown-item" href="deposit-money.html">Deposit Money</a></li>
-                                    <li><a class="dropdown-item" href="deposit-money-success.html">Deposit Money Success</a></li>
-                                    <li><a class="dropdown-item" href="withdraw-money.html">Withdraw Money</a></li>
-                                    <li><a class="dropdown-item" href="withdraw-money-success.html">Withdraw Money Success</a></li>
-                                    <li><a class="dropdown-item" href="add-card.html">Add Credit Card</a></li>
-                                    <li><a class="dropdown-item" href="fees.html">Transaction fees</a></li>
+                                    
+                                    {% if user.is_agent  %}
+                                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                                        <li><a class="dropdown-item" href="transactions.html">All Transactions</a></li>
+                                        <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                                        <li><a class="dropdown-item" href="notification.html">Notifications</a></li>
+                                        <li><a class="dropdown-item" href="send-money.html">Send Money</a></li>
+                                        <li><a class="dropdown-item" href="deposit-money.html">Deposit Money</a></li>
+                                    {% else %}
+                                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                                        <li><a class="dropdown-item" href="transactions.html">All Transactions</a></li>
+                                        <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                                        <li><a class="dropdown-item" href="withdraw-money.html">Withdraw Money</a></li>
+                                    {% endif %}
+                                        
                                 </ul>
                             </li>
                         {% endif %}
