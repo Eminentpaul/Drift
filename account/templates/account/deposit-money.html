@@ -22,41 +22,34 @@
                         </div>
                         <div class="card-body">
                             <div class="site-form mb-30">
-                                <form action="#">
+                                {% include 'message.html' %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
                                     <div class="row">
                                         <div class="col-xl-6 col-lg-6 col-sm-12 mb-10">
-                                            <label for="deposit-amount">Deposit Amount</label>
-                                            <input type="text" id="deposit-amount" value="360" required>
+                                            <label for="deposit-amount">Phone Number</label>
+                                            <input type="text" value="{{phone}}" name="phone" id="deposit-amount" required
+                                            hx-get="{% url 'recipient' %}"
+                                            hx-trigger="change"
+                                            hx-target="#recipient"
+                                            >
                                         </div>
+                                        
+                                        
+                                        
+                                        <div class="col-xl-6 col-lg-6 col-sm-12 mb-10" id="recipient">
+                                            <label for="deposit-currency">Recipient Name</label>
+                                            <input type="text" value="{{recipient}}" id="deposit-amount" readonly required>
+                                        </div>
+                                        
+                                        
                                         <div class="col-xl-6 col-lg-6 col-sm-12 mb-10">
-                                            <label for="deposit-currency">Deposit Currency</label>
-                                            <select name="currency" class="custom-select" id="deposit-currency">
-                                                <option value="">USD</option>
-                                                <option value="">AUD</option>
-                                                <option value="">GBP</option>
-                                                <option value="">CAD</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-xl-12 col-lg-12 col-sm-12 mb-10">
-                                            <label for="paymeny-gateway">Paymeny gateway</label>
-                                            <select name="paymeny" class="custom-select" id="paymeny-gateway">
-                                                <option value="">Credit Card</option>
-                                                <option value="">Padlock Holdings Bank Corp</option>
-                                                <option value="">BTC</option>
-                                                <option value="">Visa Card</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-xl-12 col-lg-12 col-sm-12 mb-10">
-                                            <label for="fee-generate">Transactions fees</label>
-                                            <input type="text" readonly="readonly" value="12" id="fee-generate" required>
-                                        </div>
-                                        <div class="col-xl-12 col-lg-12 col-sm-12 mb-10">
-                                            <label for="payment-note">Payment Description (Optional)</label>
-                                            <textarea name="msg" rows="4" placeholder="Payment note" id="payment-note"></textarea>
+                                            <label for="deposit-currency">Deposit Amount</label>
+                                            <input type="text" name="amount" id="deposit-amount" required>
                                         </div>
                                         <div class="col-xl-6 col-lg-6 col-sm-12">
                                             <button type="submit" class="bttn-mid btn-fill">Deposit money</button>
-                                            <a href="" class="link ml-4">Preview it</a>
+                                            {% comment %} <a href="" class="link ml-4">Preview it</a> {% endcomment %}
                                         </div>
                                     </div>
                                 </form>

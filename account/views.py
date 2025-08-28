@@ -2,24 +2,29 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import inflect
 from django.shortcuts import get_list_or_404, get_object_or_404
-from .models import Transaction, Account
-from .utils import All
+from .models import Transaction, Account, All_User_Transaction
+from .utils import All, cipher
 from django.contrib import messages as mg
+from user_auth.validation import phone_number_validation
+from django.db import transaction
 
 
 # Create your views here.
 
+inf = inflect.engine()
+
 @login_required(login_url='login')
 def dashboard(request):
-    inf = inflect.engine()
+    
 
     user = request.user
     a = All(user)
-
+    
 
     if user.is_agent:
         amount_words = inf.number_to_words(int(a.agent_total_amount()))
     else:
+        cipher(request.user)
         amount_words = inf.number_to_words(int(user.account.account_balance))
 
     agent_transaction = Transaction.objects.all().filter(sender=user)
@@ -50,8 +55,60 @@ def dashboard(request):
     return render(request, 'account/dashboard.html', context)
 
 
+@login_required(login_url='login')
 def deposit(request):
+    user = request.user
+    a = All(user)
+    phone = ''
+    recipient = ''
+
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        amount = request.POST.get('amount')
+
+        account = get_object_or_404(Account, account_number=phone_number_validation(phone))
+        recipient = account.user.get_full_name
+
+        if int(amount) % int(account.contributing_amount) == 0:
+            with transaction.atomic():
+                account.account_balance += int(amount)
+                account.save()
+
+                trans = Transaction.objects.create(
+                    sender = request.user,
+                    receiver = account.user,
+                    amount = float(amount),
+                    transaction_status = 'Success',
+                    transaction_type = 'Deposit',
+                )
+
+                for amount in range(int(int(amount)/int(account.contributing_amount))):
+                    All_User_Transaction.objects.create(
+                        user = account.user,
+                        user_id_number = account.account_id,
+                        amount = account.contributing_amount,
+                        transaction = trans
+                    )
+
+            mg.success(request, 'Money Deposited Successfully')
+            return redirect('dashboard')
+        else: mg.error(request, 'This Amount cannot go!')
+
     context = {
-        'agent_total_amount': agent_total_amount(),
+        'agent_total_amount': a.agent_total_amount(),
+        'amount_words': inf.number_to_words(int(a.agent_total_amount())),
+        'phone': phone,
+        'recipient': recipient 
     }
-    return render(request, 'account/deposit-money.html')
+    return render(request, 'account/deposit-money.html', context)
+
+
+def recipient(request):
+    phone = request.GET.get('phone')
+    
+    account_number = phone_number_validation(phone)
+
+    recipient = get_object_or_404(Account, account_number=account_number)
+    
+    return render(request, 'account/includes/recipient.html', {'recipient': recipient.user.get_full_name})
+    

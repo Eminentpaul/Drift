@@ -41,10 +41,10 @@
 </head>
 <body id="body">
 
-    <!-- Preloader -->
+    {% comment %} <!-- Preloader -->
     <div class="preloader">
         <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    </div><!--/Preloader -->
+    </div><!--/Preloader --> {% endcomment %}
 
     <!--Header Area-->
     <header class="header-area blue-bg-2">
@@ -93,7 +93,7 @@
                     
                     {% if user.is_authenticated %}
                         <div class="header-btn justify-content-end">
-                            <a href="{% url 'logout' %}" class="bttn-small btn-fill bg-danger">Account Logout</a>
+                            <a href="{% url 'logout' %}" class="bttn-small btn-fill bg-danger text-white">Account Logout</a>
                         </div>
                     {% else %}
                         <div class="header-btn justify-content-end">

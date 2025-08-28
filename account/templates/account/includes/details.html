@@ -10,8 +10,14 @@
                             <img src="{{user.avatar}}" alt=""> Profile <a href="profile.html"><i class="ti-arrow-top-right"></i></a>
                         </div>
                         <div class="card-body">
-                            <p>Good Day! <strong>{{user.get_full_name}}</strong></p>
-                            <p>Customer id: <strong>{{user.account.account_id}}</strong>; <br>Last login: <strong>{{user.last_login}}</strong></p>
+                            <p>Good Day! <strong>{{user.get_full_name | upper}}</strong></p>
+                            
+                            {% if user.is_agent  %}
+                                <p>AGENT ID: <strong>{{user.user_id}}</strong> <br>Last login: <strong>{{user.last_login}}</strong></p>
+                            {% else %}
+                                <p>Customer id: <strong>{{user.account.account_id}}</strong> <br>Last login: <strong>{{user.last_login}}</strong></p>
+                            {% endif %}
+                                
                         </div>
                     </div>
                 </div>

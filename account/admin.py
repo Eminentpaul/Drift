@@ -1,11 +1,15 @@
 from django.contrib import admin
-from .models import Account, Transaction
+from .models import Account, Transaction, All_User_Transaction
 # Register your models here.
 
 class AccountAdmin(admin.ModelAdmin):
     list_display = ['account_id', 'user', 'account_number',
                     'account_balance', 'account_status', 'agent']
+    list_display_links = ['account_id', 'user', 'account_number',
+                    'account_balance', 'account_status', 'agent']
     search_fields = ['account_number']
+
+    list_per_page = 20
     
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ['sender', 'receiver', 'amount',
@@ -14,5 +18,16 @@ class TransactionAdmin(admin.ModelAdmin):
     search_fields = ['amount', 'receiver__first_name',
                      'receiver__last_name', 'ref_number']
 
+    list_per_page = 20
+    
+class AllTransAdmin(admin.ModelAdmin):
+    list_display = ['user_id_number', 'user', 'amount', 'transaction', 'checked']
+    list_display_links = ['user_id_number', 'user', 'amount', 'transaction', 'checked']
+    search_fields = ['user_id_number']
+    list_filter = ['user', 'checked']
+    list_per_page = 20
+
+
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Transaction, TransactionAdmin)
+admin.site.register(All_User_Transaction, AllTransAdmin)  

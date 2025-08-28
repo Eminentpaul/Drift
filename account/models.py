@@ -60,7 +60,7 @@ class Transaction(models.Model):
     transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPE, default='Deposit')
     ref_number = ShortUUIDField(
         unique=True, length=20, max_length=25, prefix='TRN-', alphabet='1234567890')
-    counts = models.CharField(max_length=20, default=0)
+    # counts = models.CharField(max_length=20, default=0)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -68,3 +68,11 @@ class Transaction(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+
+class All_User_Transaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='user')
+    user_id_number = models.CharField(max_length=200)
+    amount = models.CharField(max_length=200)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction')
+    checked = models.BooleanField(default=False)
