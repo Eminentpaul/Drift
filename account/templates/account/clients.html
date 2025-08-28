@@ -32,24 +32,28 @@
                                 
                                 {% for client in page_obj %}
                                     
-                                    {% if client.user == user %}
+                                    
+                                    {% if client.agent == user  %}
+                                        {% if client.user == user %}
                                         
-                                    {% else %}
-                                        <tr data-toggle="modal" data-target="#exampleModalCenter"
-                                        hx-get="{% url 'client_detail' client.id %}"
-                                        hx-trigger="click"
-                                        hx-target="#client_id"
-                                        >
-                                            <td><span>{{forloop.counter}}</span></td>
-                                            <td><strong>{{client.user.get_full_name | upper}}</strong> </td>
-                                            <td><strong>{{client.account_number}}</strong></td>
-                                            <td><strong>N{{client.account_balance | intcomma}}</strong></td>
-                                                
-                                                
+                                        {% else %}
+                                            <tr data-toggle="modal" data-target="#exampleModalCenter"
+                                            hx-get="{% url 'client_detail' client.id %}"
+                                            hx-trigger="click"
+                                            hx-target="#client_id"
+                                            >
+                                                <td><span>{{forloop.counter}}</span></td>
+                                                <td><strong>{{client.user.get_full_name | upper}}</strong> </td>
+                                                <td><strong>{{client.account_number}}</strong></td>
+                                                <td><strong>N{{client.account_balance | intcomma}}</strong></td>
                                                     
-                                            <td><strong class="cl-primary">{{client.account_id}}</strong></td>
-                                        </tr>
+                                                    
+                                                        
+                                                <td><strong class="cl-primary">{{client.account_id}}</strong></td>
+                                            </tr>
+                                        {% endif %}
                                     {% endif %}
+                                        
                                         
                                 {% endfor %}
                                     

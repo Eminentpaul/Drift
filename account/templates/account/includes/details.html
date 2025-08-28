@@ -50,23 +50,13 @@
                             <li class="list-group-item"><i class="ti-check cl-primary"></i>Daily Contribution Bank</li>
                             
                             {% if user.is_agent  %}
-                                <form action="" method="post">
+                                <form action="{% url 'clients' %}" method="get">
                                     <li class="list-group-item">
                                         
                                         <div class="input-group">
                                             <div class="input-group-text"><i class="ti-search"></i></div>
-                                            <input type="text" name="q" class="form-control" id="autoSizingInputGroup" placeholder="Search Client" list="client-list">
-                                            <datalist id="client-list">
-                                                <select name="" id="autoSizingInputGroup">
-                                                    
-                                                    {% for client in agent_clients %}
-                                                        <option value="{{client.get_full_name}}" >{{client.get_full_name}}</option>
-                                                    {% endfor %}
-                                                        
-                                                    
-                                                </select>
-
-                                            </datalist>
+                                            <input type="text" name="q" class="form-control" id="autoSizingInputGroup" placeholder="Search Client">
+                                            
                                         </div>
                                     </li>
                                 </form>

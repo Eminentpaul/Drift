@@ -8,6 +8,7 @@ from django.contrib import messages as mg
 from user_auth.validation import phone_number_validation
 from django.db import transaction
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 # Create your views here.
@@ -194,11 +195,21 @@ def transaction_detail(request, pk):
 
 @login_required(login_url='login')
 def clients(request):
+
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+
     user = request.user
     a = All(user)
 
+    account = Account.objects.filter(
+        Q(account_id__icontains=q)|
+        Q(user__last_name__icontains=q)|
+        Q(user__phone__icontains=q)|
+        Q(user__first_name__icontains=q)
+    )
 
-    paginator = Paginator(a.agent_client(), 10)  
+
+    paginator = Paginator(account, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
