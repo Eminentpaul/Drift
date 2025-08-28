@@ -54,7 +54,7 @@ def registration(request):
             mg.error(request, 'The Number digits should up to 11')
 
         try:
-            check_agent = User.objects.get(user_id=agent)
+            check_agent = User.objects.get(user_id=agent, is_agent=True)
             new_number = phone_number_validation(phone)
 
             check_user = User.objects.filter(phone=new_number)

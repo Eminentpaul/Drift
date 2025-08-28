@@ -7,6 +7,7 @@ from .utils import All, cipher
 from django.contrib import messages as mg
 from user_auth.validation import phone_number_validation
 from django.db import transaction
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -103,6 +104,7 @@ def deposit(request):
     return render(request, 'account/deposit-money.html', context)
 
 
+@login_required(login_url='login')
 def recipient(request):
     phone = request.GET.get('phone')
     
@@ -111,4 +113,49 @@ def recipient(request):
     recipient = get_object_or_404(Account, account_number=account_number)
     
     return render(request, 'account/includes/recipient.html', {'recipient': recipient.user.get_full_name})
+
+
+
+def transactions(request, transaction=None):
+    user = request.user
+    a = All(user)
+
+    if user.is_agent:
+        transaction = Transaction.objects.all().filter(sender=user)
+        amount_words = inf.number_to_words(int(a.agent_total_amount()))
+    else:
+        transaction = Transaction.objects.all().filter(receiver=user)
+        amount_words = inf.number_to_words(int(user.account.account_balance))
+
+
+    paginator = Paginator(transaction, 10)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     
+
+    context = {
+        'agent_total_amount': a.agent_total_amount(),
+        'amount_words': inf.number_to_words(int(a.agent_total_amount())),
+        'page_obj': page_obj,
+        'amount_words': amount_words,
+    }
+    return render(request, 'account/transactions.html', context)
+
+
+
+def withdrawal(request):
+    user = request.user
+    a = All(user)
+
+
+    amount_words = inf.number_to_words(int(user.account.account_balance))
+
+
+    
+    context = {
+        'agent_total_amount': a.agent_total_amount(),
+        'amount_words': inf.number_to_words(int(a.agent_total_amount())),
+        'amount_words': amount_words,
+    }
+    return render(request, 'account/withdraw-money.html', context)
