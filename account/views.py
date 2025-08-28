@@ -35,12 +35,20 @@ def dashboard(request):
     # Setting User Contributing Amount 
     if request.method == 'POST':
         amount = request.POST.get('amount')
+        pin = request.POST.get('pin')
         
         if int(amount) < 200:
             mg.error(request, 'The Contributing Amount should be N200 or above!')
+
+        if len(pin) < 4 or len(pin) > 4:
+            mg.error(request, 'Your PIN number should 4 inputs')
+
+        if pin == '1234':
+            mg.error(request, f'The PIN ({pin}) is simple!')
         else:
             account = get_object_or_404(Account, user=request.user)
             account.contributing_amount = float(amount)
+            account.account_pin = pin
             account.set_amount = True
             account.save()
 
