@@ -6,4 +6,5 @@ urlpatterns = [
     path('deposit/', views.deposit, name='deposit'),
     path('recipient/', views.recipient, name='recipient'),
     path('transactions/', views.transactions, name='transactions'),
+    path('withdrawal/', views.withdrawal, name='withdrawal'),
 ]

@@ -115,7 +115,7 @@ def recipient(request):
     return render(request, 'account/includes/recipient.html', {'recipient': recipient.user.get_full_name})
 
 
-
+@login_required(login_url='login')
 def transactions(request, transaction=None):
     user = request.user
     a = All(user)
@@ -144,18 +144,37 @@ def transactions(request, transaction=None):
 
 
 
+@login_required(login_url='login')
 def withdrawal(request):
     user = request.user
     a = All(user)
+    total = 0
+    all_transaction = All_User_Transaction.objects.all().filter(user_id_number=user.account.account_id, checked=True)
+
+    for trans in all_transaction:
+        total += int(float(trans.amount))
 
 
-    amount_words = inf.number_to_words(int(user.account.account_balance))
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
+
+        if int(amount) > total:
+            mg.error(request, f'You can withdraw more than N{total}')
+        else:
+            Transaction.objects.create(
+                sender = user,
+                receiver = user,
+                amount = int(amount), 
+                transaction_status = 'Pending',
+                transaction_type = 'Widthdrawal', 
+            )
+            mg.success(request, 'Your Widthdrawal has been placed successfully')
+            
+            return redirect('dashboard')
 
 
-    
     context = {
         'agent_total_amount': a.agent_total_amount(),
-        'amount_words': inf.number_to_words(int(a.agent_total_amount())),
-        'amount_words': amount_words,
+        'amount_words': inf.number_to_words(int(user.account.account_balance)),
     }
     return render(request, 'account/withdraw-money.html', context)

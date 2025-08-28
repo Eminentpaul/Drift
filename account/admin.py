@@ -17,6 +17,8 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display_links = ['sender', 'receiver', 'amount', 'ref_number', ]
     search_fields = ['amount', 'receiver__first_name',
                      'receiver__last_name', 'ref_number']
+    list_editable = ['transaction_status']
+    list_filter = ['transaction_type']
 
     list_per_page = 20
     
@@ -25,7 +27,7 @@ class AllTransAdmin(admin.ModelAdmin):
     list_display_links = ['user_id_number', 'user', 'amount', 'transaction', 'checked']
     search_fields = ['user_id_number']
     list_filter = ['user', 'checked']
-    list_per_page = 20
+    list_per_page = 35
 
 
 admin.site.register(Account, AccountAdmin)

@@ -14,7 +14,8 @@ ACCOUNT_STATUS = (
 STATUS = (
     ('Success', 'Success'),
     ('Pending', 'Pending'),
-    ('Failed', 'Failed'),
+    ('Approved', 'Approved'),
+    ('Cancelled', 'Cancelled'),
 )
 
 

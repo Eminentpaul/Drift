@@ -65,7 +65,7 @@
                                             <th scope="col">Receiver - Type</th>
                                             <th scope="col">Amount</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Receiver ID</th>
+                                            <th scope="col">Trans. Type</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -74,17 +74,22 @@
                                                 <tr data-toggle="modal" data-target="#exampleModalCenter">
                                                     <td><span>{{transaction.created | date:"d M, Y"}}</span></td>
                                                     <td><strong>{{transaction.receiver.get_full_name}}</strong> <span>- {{transaction.transaction_type}}</span></td>
-                                                    <td><strong>{{transaction.amount}}</strong></td>
+                                                    <td><strong>N{{transaction.amount | intcomma}}</strong></td>
                                                         
                                                         {% if transaction.transaction_status == 'Success' %}
-                                                            <td><i class="ti-check cl-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Finished"></i></td>
-                                                        {% elif transaction.transaction_status == 'Failed' %}
-                                                            <td><i class="ti-close cl-red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancelled"></i></td>
+                                                            <td class="cl-primary"><i class="ti-check cl-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Finished"></i> Success</td>
+
+                                                        {% elif transaction.transaction_status == 'Approved' %}
+                                                            <td><i class="ti-cup cl-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Finished"></i> Approved</td>
+
+                                                        {% elif transaction.transaction_status == 'Cancelled' %}
+                                                            <td class="cl-red"><i class="ti-close cl-red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancelled"></i> Cancelled</td>
+                                                            
                                                         {% else %}
-                                                            <td><i class="ti-flag-alt cl-yellow" data-toggle="tooltip" data-placement="top" title="" data-original-title="Processing"></i></td>
+                                                            <td class="cl-yellow"><i class="ti-flag-alt cl-yellow" data-toggle="tooltip" data-placement="top" title="" data-original-title="Processing"></i> Pending </td>
                                                         {% endif %}
                                                             
-                                                    <td><strong class="cl-primary">{{transaction.receiver.user_id}}</strong></td>
+                                                    <td><strong class="cl-primary">{{transaction.transaction_type}}</strong></td>
                                                 </tr>
                                             {% endfor %}
                                                 
@@ -175,7 +180,7 @@
                                     </div>
                                     <div class="card-body">
                                         <p>Widthdraw from my Account</p>
-                                        <a href="" class="bttn-small btn-fill bg-danger text-white"><i class="ti-user"></i>Widthdraw Money</a>
+                                        <a href="{% url 'withdrawal' %}" class="bttn-small btn-fill bg-danger text-white"><i class="ti-user"></i>Widthdraw Money</a>
                                     </div>
                                 </div>
                            
@@ -192,7 +197,7 @@
                                                 <th scope="col">sender - Type</th>
                                                 <th scope="col">Amount</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Agent ID</th>
+                                                <th scope="col">Trans. Type</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -201,17 +206,22 @@
                                                     <tr data-toggle="modal" data-target="#exampleModalCenter">
                                                         <td><span>{{transaction.created | date:"d M, Y"}}</span></td>
                                                         <td><strong>{{transaction.sender.get_full_name}}</strong> <span>- {{transaction.transaction_type}}</span></td>
-                                                        <td><strong>{{transaction.amount}}</strong></td>
+                                                        <td><strong>N{{transaction.amount | intcomma}}</strong></td>
                                                             
                                                             {% if transaction.transaction_status == 'Success' %}
-                                                                <td><i class="ti-check cl-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Finished"></i></td>
-                                                            {% elif transaction.transaction_status == 'Failed' %}
-                                                                <td><i class="ti-close cl-red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancelled"></i></td>
+                                                            <td class="cl-primary"><i class="ti-check cl-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Finished"></i> Success</td>
+
+                                                            {% elif transaction.transaction_status == 'Approved' %}
+                                                                <td><i class="ti-cup cl-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Finished"></i> Approved</td>
+
+                                                            {% elif transaction.transaction_status == 'Cancelled' %}
+                                                                <td class="cl-red"><i class="ti-close cl-red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancelled"></i> Cancelled</td>
+                                                                
                                                             {% else %}
-                                                                <td><i class="ti-flag-alt cl-yellow" data-toggle="tooltip" data-placement="top" title="" data-original-title="Processing"></i></td>
+                                                                <td class="cl-yellow"><i class="ti-flag-alt cl-yellow" data-toggle="tooltip" data-placement="top" title="" data-original-title="Processing"></i> Pending </td>
                                                             {% endif %}
                                                                 
-                                                        <td><strong class="cl-primary">{{transaction.sender.user_id}}</strong></td>
+                                                        <td><strong class="cl-primary">{{transaction.transaction_type}}</strong></td>
                                                     </tr>
                                                 {% endfor %}
                                                     
