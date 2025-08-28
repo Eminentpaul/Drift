@@ -71,7 +71,11 @@
                                         <tbody>
                                             
                                             {% for transaction in agent_transaction %}
-                                                <tr data-toggle="modal" data-target="#exampleModalCenter">
+                                                <tr data-toggle="modal" data-target="#exampleModalCenter"
+                                                hx-get="{% url 'transaction_detail' transaction.id %}"
+                                                hx-trigger="click"
+                                                hx-target="#trans_id"
+                                                >
                                                     <td><span>{{transaction.created | date:"d M, Y"}}</span></td>
                                                     <td><strong>{{transaction.receiver.get_full_name}}</strong> <span>- {{transaction.transaction_type}}</span></td>
                                                     <td><strong>N{{transaction.amount | intcomma}}</strong></td>
@@ -102,56 +106,8 @@
                                     <!-- Transaction Details Modal -->
                                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="row no-gutters">
-                                                    <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
-                                                        <div class="transaction-modal-left my-auto centered">
-                                                            <div class="mb-30"><i class="flaticon-006-wallet"></i></div>
-                                                            <h3 class="my-3">Padlock Holdings Bank Corp</h3>
-                                                            <h4 class="cl-white my-4">$598.20</h4>
-                                                            <p class="cl-white">10 Feb 2021</p>
-                                                            <div class="completed">Completed</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-7">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalCenterTitle">Transaction Details</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="transaction-modal-details">
-                                                            <div class="faq-contents">
-                                                                <ul class="accordion">
-                                                                    <li>
-                                                                        <a href="">Transaction details</a>
-                                                                        <p>
-                                                                            <strong>Transaction ID</strong> <br><span>35791598</span><br><br>
-                                                                            <strong>To</strong> <br><span>Namecheap Ltd.</span><br><br>
-                                                                            <strong>Description</strong> <br><span>Domain Purchasing cost felis id rhoncus eros dui</span>
-                                                                        </p>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="">Transfer details</a>
-                                                                        <p>
-                                                                            <strong>Transfer ID</strong> <br><span>587935791598</span><br><br>
-                                                                            <strong>Transfer amount</strong> <br><span>5,326.36 USD</span><br><br>
-                                                                            <strong>Exchange rate</strong> <br><span>1 USD = 0.92 GBP</span>
-                                                                        </p>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="">Transaction history</a>
-                                                                        <p>
-                                                                            <strong>Completed</strong> <br><span>15 Feb 2021</span><br><br>
-                                                                            <strong>Approved</strong> <br><span>15 Feb 2021</span><br><br>
-                                                                            <strong>Under review</strong> <br><span>15 Feb 2021</span>
-                                                                        </p>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div class="modal-content" id="trans_id">
+                                                
                                             </div>
                                         </div><!-- /Transaction Details Modal -->
                                     </div>
@@ -203,7 +159,11 @@
                                             <tbody>
                                                 
                                                 {% for transaction in user_transaction %}
-                                                    <tr data-toggle="modal" data-target="#exampleModalCenter">
+                                                    <tr data-toggle="modal" data-target="#exampleModalCenter"
+                                                    hx-get="{% url 'transaction_detail' transaction.id %}"
+                                                    hx-trigger="click"
+                                                    hx-target="#trans_id"
+                                                    >
                                                         <td><span>{{transaction.created | date:"d M, Y"}}</span></td>
                                                         <td><strong>{{transaction.sender.get_full_name}}</strong> <span>- {{transaction.transaction_type}}</span></td>
                                                         <td><strong>N{{transaction.amount | intcomma}}</strong></td>
@@ -237,56 +197,8 @@
                                     <!-- Transaction Details Modal -->
                                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="row no-gutters">
-                                                    <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
-                                                        <div class="transaction-modal-left my-auto centered">
-                                                            <div class="mb-30"><i class="flaticon-006-wallet"></i></div>
-                                                            <h3 class="my-3">Padlock Holdings Bank Corp</h3>
-                                                            <h4 class="cl-white my-4">$598.20</h4>
-                                                            <p class="cl-white">10 Feb 2021</p>
-                                                            <div class="completed">Completed</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-7">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalCenterTitle">Transaction Details</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="transaction-modal-details">
-                                                            <div class="faq-contents">
-                                                                <ul class="accordion">
-                                                                    <li>
-                                                                        <a href="">Transaction details</a>
-                                                                        <p>
-                                                                            <strong>Transaction ID</strong> <br><span>35791598</span><br><br>
-                                                                            <strong>To</strong> <br><span>Namecheap Ltd.</span><br><br>
-                                                                            <strong>Description</strong> <br><span>Domain Purchasing cost felis id rhoncus eros dui</span>
-                                                                        </p>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="">Transfer details</a>
-                                                                        <p>
-                                                                            <strong>Transfer ID</strong> <br><span>587935791598</span><br><br>
-                                                                            <strong>Transfer amount</strong> <br><span>5,326.36 USD</span><br><br>
-                                                                            <strong>Exchange rate</strong> <br><span>1 USD = 0.92 GBP</span>
-                                                                        </p>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="">Transaction history</a>
-                                                                        <p>
-                                                                            <strong>Completed</strong> <br><span>15 Feb 2021</span><br><br>
-                                                                            <strong>Approved</strong> <br><span>15 Feb 2021</span><br><br>
-                                                                            <strong>Under review</strong> <br><span>15 Feb 2021</span>
-                                                                        </p>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div class="modal-content" id="trans_id">
+                                                
                                             </div>
                                         </div><!-- /Transaction Details Modal -->
                                     </div>

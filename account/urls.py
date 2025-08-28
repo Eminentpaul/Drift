@@ -7,4 +7,5 @@ urlpatterns = [
     path('recipient/', views.recipient, name='recipient'),
     path('transactions/', views.transactions, name='transactions'),
     path('withdrawal/', views.withdrawal, name='withdrawal'),
+    path('transaction/<str:pk>/details/', views.transaction_detail, name='transaction_detail'),
 ]

@@ -30,12 +30,12 @@
                         {% if user.is_agent %}
                             <div class="card-body">
                                 <p>NG Naira: <br><strong><span style="font-size: 30px;">N{{agent_total_amount | intcomma}}.00</span></strong></p>
-                                <p>{{amount_words | title}} Naira</p>
+                                <p>{{amount_words | title}} Naira Only</p>
                             </div>
                         {% else %}
                             <div class="card-body">
                                 <p>NG Naira: <br><strong><span style="font-size: 30px;">N{{user.account.account_balance | intcomma}}</span></strong></p>
-                                <p>{{amount_words | title}} Naira</p>
+                                <p>{{amount_words | title}} Naira Only</p>
                             </div>
                         {% endif %}
                             

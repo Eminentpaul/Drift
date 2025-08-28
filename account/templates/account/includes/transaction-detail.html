@@ -1,0 +1,47 @@
+{% load humanize %}
+
+<div class="row no-gutters">
+    <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
+        <div class="transaction-modal-left my-auto centered">
+            <div class="mb-30"><i class="flaticon-006-wallet"></i></div>
+            <h3 class="my-3">{{transaction.receiver.get_full_name | upper}}</h3>
+            <h4 class="cl-white my-4">N{{transaction.amount | intcomma}}</h4>
+            <p class="cl-white">{{transaction.created }}</p>
+            <div class="completed">{{transaction.transaction_status}}</div>
+        </div>
+    </div>
+    <div class="col-sm-7">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Transaction Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="transaction-modal-details">
+            <div class="faq-contents">
+                <ul class="accorddion">
+                    
+                    <li>
+                        <a href="">Transaction Details</a>
+                        <p>
+                            <strong>Transfer ID</strong> <br><span>{{transaction.ref_number}}</span><br><br>
+                            <strong>Transaction Amount</strong> <br><span style="font-size: 20px;"><strong>N{{transaction.amount | intcomma}}</strong></span><br><br>
+                            <strong>Amount in Words</strong> <br><span style="font-size: 18px;">{{amount_words | title}} Naira Only</span>
+                        </p>
+                    </li>
+                    <li>
+                        <a href="">Transaction History</a>
+                        <p>
+                            <strong>Submited</strong> <br><span>{{transaction.created}}</span><br><br>
+                            <strong>Approved</strong> <br><span>{{transaction.updated}}</span>
+                            <hr>
+                            <strong>SENDER</strong> <br>
+                            <span>{{transaction.sender.get_full_name | title}} | </span>
+                            <span>SENDER'S USER_ID: {{transaction.sender.user_id }}</span>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -178,3 +178,15 @@ def withdrawal(request):
         'amount_words': inf.number_to_words(int(user.account.account_balance)),
     }
     return render(request, 'account/withdraw-money.html', context)
+
+
+
+@login_required(login_url='login')
+def transaction_detail(request, pk):
+    transaction = get_object_or_404(Transaction, id=pk)
+    
+    context = {
+        'transaction': transaction,
+        'amount_words': inf.number_to_words(int(transaction.amount)),
+    }
+    return render(request, 'account/includes/transaction-detail.html', context)

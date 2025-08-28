@@ -72,9 +72,8 @@
                                     {% if user.is_agent  %}
                                         <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
                                         <li><a class="dropdown-item" href="{% url 'transactions' %}">All Transactions</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'transactions' %}">My Clients</a></li>
                                         <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-                                        <li><a class="dropdown-item" href="notification.html">Notifications</a></li>
-                                        <li><a class="dropdown-item" href="send-money.html">Send Money</a></li>
                                         <li><a class="dropdown-item" href="{% url 'deposit' %}">Deposit Money</a></li>
                                     {% else %}
                                         <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>

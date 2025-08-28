@@ -13,7 +13,7 @@ class AccountAdmin(admin.ModelAdmin):
     
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ['sender', 'receiver', 'amount',
-                    'transaction_status', 'ref_number', 'created']
+                    'transaction_status', 'transaction_type', 'ref_number', 'created']
     list_display_links = ['sender', 'receiver', 'amount', 'ref_number', ]
     search_fields = ['amount', 'receiver__first_name',
                      'receiver__last_name', 'ref_number']

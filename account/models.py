@@ -1,8 +1,9 @@
 from django.db import models
 from user_auth.models import User
 from shortuuid.django_fields import ShortUUIDField
-from django.urls import reverse
-from django.db.models.signals import post_save
+# from django.urls import reverse
+# from django.db.models.signals import post_save
+from django.shortcuts import get_object_or_404
 
 
 # Create your models here.
@@ -72,11 +73,27 @@ class Transaction(models.Model):
     transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPE, default='Deposit')
     ref_number = ShortUUIDField(
         unique=True, length=20, max_length=25, prefix='TRN-', alphabet='1234567890')
-    # counts = models.CharField(max_length=20, default=0)
+    withdraw_approved = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.sender}'
+    
+
+    def clean(self):
+        if self.transaction_status == 'Approved' and \
+            self.withdraw_approved == False and \
+                self.transaction_type == 'Widthdrawal':
+            
+            account = get_object_or_404(Account, user=self.receiver)
+            account.account_balance -= self.amount
+            account.save()
+
+            
+            self.withdraw_approved = True
+            return self.withdraw_approved
+
 
     class Meta:
         ordering = ['-created']
