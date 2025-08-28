@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Account, Transaction, All_User_Transaction
+from .models import Account, Transaction, All_User_Transaction, DividendAccount
 # Register your models here.
 
 class AccountAdmin(admin.ModelAdmin):
@@ -31,3 +31,4 @@ class AllTransAdmin(admin.ModelAdmin):
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(All_User_Transaction, AllTransAdmin)  
+admin.site.register(DividendAccount) 

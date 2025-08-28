@@ -2,6 +2,8 @@ from django.db import models
 from user_auth.models import User
 from shortuuid.django_fields import ShortUUIDField
 from django.urls import reverse
+from django.db.models.signals import post_save
+
 
 # Create your models here.
 ACCOUNT_STATUS = (
@@ -25,28 +27,37 @@ TRANSACTION_TYPE = (
 class Account(models.Model):
     account_id = ShortUUIDField(
         unique=True, length=7, max_length=25, prefix='ADS', alphabet='1234567890')
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     account_number = models.CharField(max_length=10)
     account_balance = models.DecimalField(
         max_length=12, decimal_places=2, max_digits=12, default=0.00)
     account_status = models.CharField(
         max_length=100, choices=ACCOUNT_STATUS, default='active')
     agent = models.ForeignKey(
-        User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='agent')
+        User, on_delete=models.SET_NULL, blank=True, null=True, related_name='agent')
     date = models.DateTimeField(auto_now_add=True)
     set_amount = models.BooleanField(default=False)
     account_pin = models.IntegerField(null=True, blank=True)
     update = models.DateTimeField(auto_now=True)
-    contributing_amount = models.DecimalField(max_length=12, max_digits=12, decimal_places=2)
+    contributing_amount = models.DecimalField(max_length=12, default=0.00, max_digits=12, decimal_places=2)
 
     class Meta:
         ordering = ['-update']
         
     def __str__(self):
-        return f"{self.user.first_name}"
+        return f"{self.account_id} | {self.account_number}"
     
-    def get_url(self):
-        return reverse('deposit', args=[self.account_id])
+    # def get_url(self):
+    #     return reverse('deposit', args=[self.account_id])
+
+
+class DividendAccount(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.SET_NULL, null=True)
+    account_id = models.CharField(max_length=200)
+    dividend = models.IntegerField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    
 
 
 class Transaction(models.Model):
@@ -71,8 +82,12 @@ class Transaction(models.Model):
 
 
 class All_User_Transaction(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='user')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='user')
     user_id_number = models.CharField(max_length=200)
     amount = models.CharField(max_length=200)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction')
     checked = models.BooleanField(default=False)
+
+
+    class Meta:
+        verbose_name = 'All User Transaction'

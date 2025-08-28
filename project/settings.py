@@ -40,7 +40,7 @@ THIRD_PARTY_APPS = [
 CUSTOM_APPS = [
     'base',
     'user_auth',
-    'account'
+    'account.apps.AccountConfig'
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
