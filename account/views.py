@@ -190,3 +190,32 @@ def transaction_detail(request, pk):
         'amount_words': inf.number_to_words(int(transaction.amount)),
     }
     return render(request, 'account/includes/transaction-detail.html', context)
+
+
+@login_required(login_url='login')
+def clients(request):
+    user = request.user
+    a = All(user)
+
+
+    paginator = Paginator(a.agent_client(), 10)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'amount_words': inf.number_to_words(int(a.agent_total_amount())),
+        'agent_total_amount': a.agent_total_amount(),
+    }
+    return render(request, 'account/clients.html', context)
+
+
+@login_required(login_url='login')
+def client_detail(request, pk):
+    account = get_object_or_404(Account, id=pk)
+
+    context = {
+        'account': account,
+        'amount_words': inf.number_to_words(int(account.account_balance)),
+    }
+    return render(request, 'account/includes/client-detail.html', context)

@@ -72,7 +72,7 @@
                                     {% if user.is_agent  %}
                                         <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
                                         <li><a class="dropdown-item" href="{% url 'transactions' %}">All Transactions</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'transactions' %}">My Clients</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'clients' %}">My Clients</a></li>
                                         <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                                         <li><a class="dropdown-item" href="{% url 'deposit' %}">Deposit Money</a></li>
                                     {% else %}
