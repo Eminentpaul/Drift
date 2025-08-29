@@ -1,0 +1,14 @@
+{% load humanize %}
+
+<div class="row no-gutters">
+    <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
+        <div class="transaction-modal-left my-auto centered">
+            <div class="mb-30"><i class="flaticon-006-wallet"></i></div>
+            <h3 class="my-3">{{account.user.get_full_name | upper}}</h3>
+            <h4 class="cl-white my-4">N{{account.account_balance | intcomma}}</h4>
+            <p class="cl-white">DATE JOINED: <br>{{account.user.date_joined | date:"d M, Y"}}</p>
+            <div class="completed">ID: {{account.account_id}}</div>
+        </div>
+    </div>
+    
+</div>

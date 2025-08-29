@@ -9,11 +9,14 @@ from user_auth.validation import phone_number_validation
 from django.db import transaction
 from django.core.paginator import Paginator
 from django.db.models import Q
+import json
 
 
 # Create your views here.
 
 inf = inflect.engine()
+
+
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -72,7 +75,9 @@ def deposit(request):
     phone = ''
     recipient = ''
 
+
     if request.method == 'POST':
+
         phone = request.POST.get('phone')
         amount = request.POST.get('amount')
 
@@ -80,28 +85,13 @@ def deposit(request):
         recipient = account.user.get_full_name
 
         if int(amount) % int(account.contributing_amount) == 0:
-            with transaction.atomic():
-                account.account_balance += int(amount)
-                account.save()
+            instace = json.dumps({
+                'amount': amount,
+                'phone': phone
+            })
 
-                trans = Transaction.objects.create(
-                    sender = request.user,
-                    receiver = account.user,
-                    amount = float(amount),
-                    transaction_status = 'Success',
-                    transaction_type = 'Deposit',
-                )
-
-                for amount in range(int(int(amount)/int(account.contributing_amount))):
-                    All_User_Transaction.objects.create(
-                        user = account.user,
-                        user_id_number = account.account_id,
-                        amount = account.contributing_amount,
-                        transaction = trans
-                    )
-
-            mg.success(request, 'Money Deposited Successfully')
-            return redirect('dashboard')
+            request.session['transact'] = instace 
+            return redirect('pin')
         else: mg.error(request, 'This Amount cannot go!')
 
     context = {
@@ -170,16 +160,13 @@ def withdrawal(request):
         if int(amount) > total:
             mg.error(request, f'You can withdraw more than N{total}')
         else:
-            Transaction.objects.create(
-                sender = user,
-                receiver = user,
-                amount = int(amount), 
-                transaction_status = 'Pending',
-                transaction_type = 'Widthdrawal', 
-            )
-            mg.success(request, 'Your Widthdrawal has been placed successfully')
+            instace = json.dumps({
+                'amount': amount,
+            })
+
+            request.session['transact'] = instace 
+            return redirect('pin')
             
-            return redirect('dashboard')
 
 
     context = {
@@ -238,3 +225,62 @@ def client_detail(request, pk):
         'amount_words': inf.number_to_words(int(account.account_balance)),
     }
     return render(request, 'account/includes/client-detail.html', context)
+
+
+
+@login_required(login_url='login')
+def pin(request):
+
+    instance = request.session['transact']
+    data = json.loads(instance)
+    
+    user = request.user
+
+    if request.method == 'POST':
+        pin = request.POST.get('pin') 
+
+        if str(request.user.account.account_pin) == str(pin):
+                        
+            if user.is_agent:
+                phone = data['phone']
+                amount = data['amount']
+
+                account = get_object_or_404(Account, account_number=phone_number_validation(phone))
+
+                with transaction.atomic():
+                    account.account_balance += int(amount)
+                    account.save()
+
+                    trans = Transaction.objects.create(
+                        sender = request.user,
+                        receiver = account.user,
+                        amount = float(amount),
+                        transaction_status = 'Success',
+                        transaction_type = 'Deposit',
+                    )
+
+                    for amount in range(int(int(amount)/int(account.contributing_amount))):
+                        All_User_Transaction.objects.create(
+                            user = account.user,
+                            user_id_number = account.account_id,
+                            amount = account.contributing_amount,
+                            transaction = trans
+                        )
+
+                mg.success(request, 'Money Deposited Successfully')
+                return redirect('dashboard')
+            else:
+                amount = data['amount']
+
+                Transaction.objects.create(
+                    sender = user,
+                    receiver = user,
+                    amount = int(amount), 
+                    transaction_status = 'Pending',
+                    transaction_type = 'Widthdrawal',
+                )
+                mg.success(request, 'Your Widthdrawal has been placed successfully')
+                
+                return redirect('dashboard')
+
+    return render(request, 'account/pin.html')

@@ -38,3 +38,5 @@ def cipher(user):
             for count in count_list:
                 count.checked = True 
                 count.save()
+
+
