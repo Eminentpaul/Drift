@@ -64,18 +64,29 @@
                                 {% comment %} <p>You've Successfully deposited money to your account from your <strong>Credit Card</strong></p> {% endcomment %}
                                 
 
-                                <div class="row justify-content-center">
-                                    <div class="col-xl-6 col-lg-6 col-sm-12">
-                                        <div class="newslatter">
-                                            {% include 'message.html' %}
-                                            <form action="" method='post' >
-                                                {% csrf_token %}
+                                <div class="blue-bg shaded-bg p-3">
+                                    <div class="site-form mb-30">
+                                        {% include 'message.html' %}
+                                        <form action="{% url 'pin_change' user.user_id %}" method="post" >
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                                    <input type="password" name="current_pin" id="digits-only" maxlength="4" placeholder="Current Pin" required>
+                                                </div>
+                                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                                    <input type="password" name="new_pin" id="digits-only1" maxlength="4" placeholder="New Pin" required>
+                                                </div>
+                                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                                    <input type="password" name="confirm_pin" id="digits-only2" maxlength="4" placeholder="Confirm Pin" required>
+                                                </div>
                                                 
-                                                <input type="password" name="pin" id="digits-only" maxlength="4" placeholder="Account PIN" required><br><br>
-                                                <button type="submit" style="padding: 0 30px;">Verify</button>
-                                            </form>
-                                            
-                                        </div>
+                                                
+                                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                                    <button type="submit" class="bttn-mid btn-fill w-100">Update</button>
+                                                </div>
+                                                
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
 
@@ -94,7 +105,7 @@
 
 
     <!--Footer Area-->
-    <footer class="footer-area section-padding-2 blue-bg-2">
+    <footer class="footer-area section-padding-2 blue-bg-2 d-none">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-3 col-12">
@@ -131,6 +142,26 @@
             </div>
         </div>
     </footer><!--/Footer Area-->
+
+        <script>
+            const input2 = document.getElementById('digits-only2');
+
+            input2.addEventListener('input', function(event) {
+                // Replace any non-numeric character with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        </script>
+
+
+        <script>
+            const input1 = document.getElementById('digits-only1');
+
+            input1.addEventListener('input', function(event) {
+                // Replace any non-numeric character with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        </script>
+
 
         <script>
             const input = document.getElementById('digits-only');

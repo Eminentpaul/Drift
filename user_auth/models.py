@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from shortuuid.django_fields import ShortUUIDField
 from django.urls import reverse
+from .utils import imageResize
 
 # Create your models here.
 GENDER = (
@@ -17,6 +18,8 @@ class User(AbstractUser):
     phone = models.CharField(max_length=14, blank=True, unique=True)
     is_agent = models.BooleanField(default=False)
     gender = models.CharField(max_length=20, choices=GENDER, null=True, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    address = models.CharField(max_length=500, null=True, blank=True)
     user_id = ShortUUIDField(
         unique=True, length=6, max_length=25, prefix='DSA', alphabet='1234567890')
     image = models.ImageField(upload_to='users/', default='../media/users/newUser.jpg', null=True, blank=True)
@@ -26,6 +29,14 @@ class User(AbstractUser):
     
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+    
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            self.image = imageResize(self.image)
+            super().save(*args, **kwargs)
+        else:
+            super().save(*args, **kwargs)
     
 
     def avatar(self):

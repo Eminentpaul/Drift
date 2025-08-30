@@ -2,6 +2,7 @@ from .models import Account, Transaction, All_User_Transaction
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
+
 class All:
     def __init__(self, agent):
         self.agent = agent
@@ -19,6 +20,9 @@ class All:
         
 
         return agent_total_amount
+    
+
+ 
 
 
 
@@ -40,3 +44,10 @@ def cipher(user):
                 count.save()
 
 
+
+
+def mask(user):
+    prefix = user.account.account_number[:2]
+    suffix = user.account.account_number[-2:]
+
+    return f'{prefix}{'*' * 6}{suffix}'

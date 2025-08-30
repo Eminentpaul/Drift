@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import inflect
+from user_auth.models import User
 from django.shortcuts import get_list_or_404, get_object_or_404
 from .models import Transaction, Account, All_User_Transaction
-from .utils import All, cipher
+from .utils import All, cipher, mask
 from django.contrib import messages as mg
 from user_auth.validation import phone_number_validation
 from django.db import transaction
 from django.core.paginator import Paginator
 from django.db.models import Q
 import json
+from .forms import UserUpdateForm
 
 
 # Create your views here.
@@ -69,6 +71,98 @@ def dashboard(request):
 
 
 @login_required(login_url='login')
+def profile(request, pk):
+    user = request.user
+    a = All(user)
+    error_msg = []
+
+    if user.is_agent:
+        amount_words = inf.number_to_words(int(a.agent_total_amount()))
+    else: 
+        amount_words = inf.number_to_words(int(user.account.account_balance))
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        gender = request.POST.get('gender')
+        dob = request.POST.get('dob')
+        address = request.POST.get('address')
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=user)
+        
+        if form.is_valid():
+            print(form)
+            user_detail = form.save(commit=False)
+            user_detail.first_name = first_name
+            user_detail.last_name = last_name
+            user_detail.gender = gender
+            user_detail.dob = dob
+            user_detail.address = address
+            
+            user_detail.save()
+        else: 
+            errors = form.errors.get_json_data(escape_html=True)
+            for error in errors:
+                error_msg = errors[error][0]['message']
+
+            mg.error(request, error_msg)
+
+
+    context = {
+        'amount_words': amount_words,
+        'agent_total_amount': a.agent_total_amount(),
+        'account_number': mask(user=user)
+    }
+    return render(request, 'account/profile.html', context) 
+
+
+@login_required(login_url='login')
+def edit_profile(request, pk):
+    user = request.user
+    a = All(user)
+    
+    
+    
+    return render(request, 'account/includes/edit-profile.html') 
+
+
+@login_required(login_url='login')
+def pin_pop(request, pk):
+    
+    mg.warning(request, 'ENTER YOUR CORRECT CURRENT PIN')      
+
+    return render(request, 'account/includes/change-pin.html')
+
+
+@login_required(login_url='login')
+def pin_change(request, pk):
+    user = get_object_or_404(User, user_id=pk)
+    
+    if request.method == 'POST':
+        pin = request.POST.get('current_pin')
+        new_pin = request.POST.get('new_pin')
+        c_pin = request.POST.get('confirm_pin')
+
+        if str(user.account.account_pin) == pin:
+            if c_pin == new_pin:
+                account = get_object_or_404(Account, account_id=user.account.account_id) 
+                account.account_pin = new_pin
+                account.save()
+
+                mg.success(request, 'PIN UPDATED')
+                return redirect('profile', user.user_id)
+            else:
+                mg.error(request, 'The New PIN and Confirm PIN is not the same!')
+
+            
+        else:
+            mg.error(request, 'Enter your Correct CURRENT PIN')
+
+    return render(request, 'account/includes/change-pin.html')
+
+
+
+@login_required(login_url='login') 
 def deposit(request):
     user = request.user
     a = All(user)
@@ -273,7 +367,7 @@ def pin(request):
                 amount = data['amount']
 
                 Transaction.objects.create(
-                    sender = user,
+                    sender = user.account.agent,
                     receiver = user,
                     amount = int(amount), 
                     transaction_status = 'Pending',

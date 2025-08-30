@@ -1,0 +1,108 @@
+{% load humanize %}
+{% load static %}
+
+<div class="row no-gutters">
+    <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
+        
+        <div class="transaction-modal-left my-auto centered">
+            
+            <div class="mb-30">
+                <div class="thumb text-right">
+                    <img src="{{user.avatar}}" alt="" id="avatarno">
+                </div>
+            </div>
+            {% comment %} <h3 class="my-3">{{transaction.receiver.get_full_name | upper}}</h3>
+            <h4 class="cl-white my-4">N{{transaction.amount | intcomma}}</h4>
+            <p class="cl-white">{{transaction.created }}</p>
+            <div class="completed">{{transaction.transaction_status}}</div> {% endcomment %}
+        </div>
+    </div>
+    <div class="col-sm-7 ">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">User/Account Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="blue-bg shaded-bg p-3">
+            <div class="site-form mb-30">
+                {% include 'message.html' %}
+                <form action="{% url 'profile' user.user_id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-sm-6">
+                            <input type="text" value="{{user.first_name}}" name="first_name" placeholder="First Name" required>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6">
+                            <input type="text" value="{{user.last_name}}" name="last_name" placeholder="Last Name" required>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6">
+                            <input type="email" value="{{user.email}}" readonly name="email" placeholder="Email" required>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6">
+                            <input type="text" value="{{user.phone}}" readonly name="phone" placeholder="Phone Number" required>
+                        </div>
+                        <div class="col-xl-6 col-lg-8 col-sm-6">
+                            <input type="text" value="{{user.gender}}" name="gender" id="gender" list="gender-list" placeholder="Your Gender" required>
+                            <datalist id="gender-list">
+                                <select name="" id="gender">
+                                    <option selected disabled value="" >Select Gender</option>
+                                    <option value="Female" >Female</option>
+                                    <option value="Male" >Male</option>
+                                </select>
+
+                            </datalist>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6">
+                            <input type="date" value="{{user.dob}}" name="dob" placeholder="Date of Birth" required>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6">
+                            <label for="upload">
+                                <span class="bttn-mid btn-fill w-100">Upload File</span>
+                            </label>
+                            <input type="file" class="d-none" id="upload" name="image" placeholder="Date of Birth" required>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-sm-12">
+                            <input type="text" value="{{user.address}}" name="address" placeholder="Work/Residential Address" required>
+                        </div>
+                        
+                        <div class="col-xl-12 col-lg-12 col-sm-12">
+                            <button type="submit" class="bttn-mid btn-fill w-100">Update</button>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+<script>
+    // This updates the Profile Picture
+    const profilePhoto = document.querySelector('input[name="image"]');
+
+    profilePhoto.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const image = document.querySelector('#avatarno');
+
+    if (file && file.type.includes('image')) {
+        const url = URL.createObjectURL(file);
+        image.src = url;
+    }
+    });
+
+    
+
+    // This updates the name
+    //const display_nameInput = document.getElementById('id_displayname');
+    //const display_nameOutput = document.getElementById('displayname');
+
+    //display_nameInput.addEventListener('input', (event) => {
+        // display_nameOutput.innerText = event.target.value;
+    //});
+
+</script>
