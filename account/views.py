@@ -4,7 +4,8 @@ import inflect
 from user_auth.models import User
 from django.shortcuts import get_list_or_404, get_object_or_404
 from .models import Transaction, Account, All_User_Transaction
-from .utils import All, cipher, mask
+from .utils import All, cipher
+from .masking import mask
 from django.contrib import messages as mg
 from user_auth.validation import phone_number_validation
 from django.db import transaction
@@ -12,6 +13,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 import json
 from .forms import UserUpdateForm
+from .twillo import send_sms
 
 
 # Create your views here.
@@ -23,7 +25,6 @@ inf = inflect.engine()
 @login_required(login_url='login')
 def dashboard(request):
     
-
     user = request.user
     a = All(user)
     
@@ -111,7 +112,7 @@ def profile(request, pk):
     context = {
         'amount_words': amount_words,
         'agent_total_amount': a.agent_total_amount(),
-        'account_number': mask(user=user)
+        'account_number': mask(acctno=user.account.account_number)
     }
     return render(request, 'account/profile.html', context) 
 
@@ -242,7 +243,7 @@ def withdrawal(request):
     user = request.user
     a = All(user)
     total = 0
-    all_transaction = All_User_Transaction.objects.all().filter(user_id_number=user.account.account_id, checked=True)
+    all_transaction = All_User_Transaction.objects.all().filter(user_id_number=user.account.account_id, checked=False)
 
     for trans in all_transaction:
         total += int(float(trans.amount))
@@ -251,8 +252,8 @@ def withdrawal(request):
     if request.method == 'POST':
         amount = request.POST.get('amount')
 
-        if int(amount) > total:
-            mg.error(request, f'You can withdraw more than N{total}')
+        if int(amount) > user.account.account_balance - total:
+            mg.error(request, f'You can withdraw more than N{user.account.account_balance - total}')
         else:
             instace = json.dumps({
                 'amount': amount,
@@ -360,9 +361,19 @@ def pin(request):
                             amount = account.contributing_amount,
                             transaction = trans
                         )
+                    transaction.on_commit(
+                        lambda:send_sms(
+                            depamount=data['amount'], 
+                            acctbal=account.account_balance, 
+                            desc=f'DEPOSIT from {user.account.agent}',
+                            acctno=account.account_number,
+                            date=trans.created
+                        )
+                    )
 
-                mg.success(request, 'Money Deposited Successfully')
-                return redirect('dashboard')
+                    mg.success(request, 'Money Deposited Successfully')
+                    return redirect('dashboard')
+
             else:
                 amount = data['amount']
 
@@ -377,4 +388,4 @@ def pin(request):
                 
                 return redirect('dashboard')
 
-    return render(request, 'account/pin.html')
+    return render(request, 'account/pin.html') 

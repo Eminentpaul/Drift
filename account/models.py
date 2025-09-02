@@ -1,9 +1,9 @@
 from django.db import models
 from user_auth.models import User
 from shortuuid.django_fields import ShortUUIDField
-# from django.urls import reverse
-# from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404
+from .twillo import send_sms 
+# from .utils import mask
 
 
 # Create your models here.
@@ -89,6 +89,16 @@ class Transaction(models.Model):
             account = get_object_or_404(Account, user=self.receiver)
             account.account_balance -= self.amount
             account.save()
+            
+
+            send_sms(
+                    acctbal=account.account_balance,
+                    acctno=account.account_number, 
+                    depamount=self.amount,
+                    desc=f'WITHDRAWAL by You, {self.receiver}',
+                    date=self.updated
+                )
+
 
             
             self.withdraw_approved = True

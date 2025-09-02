@@ -30,7 +30,13 @@ class AllTransAdmin(admin.ModelAdmin):
     list_per_page = 35
 
 
+
+class AdminDividend(admin.ModelAdmin):
+    list_display = ['user', 'account_id', 'dividend']
+    list_display_links = ['user', 'account_id', 'dividend']
+
+
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(All_User_Transaction, AllTransAdmin)  
-admin.site.register(DividendAccount) 
+admin.site.register(DividendAccount, AdminDividend) 

@@ -1,7 +1,7 @@
-from .models import Account, Transaction, All_User_Transaction
+from .models import Account, All_User_Transaction, DividendAccount
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-
+from .twillo import send_sms
 
 class All:
     def __init__(self, agent):
@@ -27,27 +27,43 @@ class All:
 
 
 def cipher(user):
-    transactions = All_User_Transaction.objects.all().filter(user=user, checked=False)
+    transactions = All_User_Transaction.objects.all().filter(user=user)
     count_list = []
 
     for trans in transactions:
-        count_list.append(trans)
+        if trans.checked == True:
+            # Deleting the Checked transaction 
+            trans.delete()
+            # trans.save()
+        else:
+            count_list.append(trans)
 
-        if len(count_list) == 31:
-            # Deducting the contributing amount after 31 counts 
-            account = get_object_or_404(Account, user=user)
-            account.account_balance -= account.contributing_amount
-            account.save()
+            if len(count_list) == 31:
+                # Deducting the contributing amount after 31 counts 
+                account = get_object_or_404(Account, user=user)
+                account.account_balance -= account.contributing_amount
+                account.save()
 
-            for count in count_list:
-                count.checked = True 
-                count.save()
+                # Registering the deducted Dividend
+                dividend = get_object_or_404(DividendAccount, user=account)
+                dividend.dividend += account.contributing_amount
+                dividend.save()
+
+                # Sending an Sms for collecting Dividend
+                send_sms(
+                    acctbal=account.account_balance,
+                    acctno=account.account_number, 
+                    depamount=account.contributing_amount,
+                    desc='Monthly Contr. Chrge',
+                    date=dividend.date
+                )
+
+                # Keeping Track of the collected Dividend 
+                for count in count_list:
+                    count.checked = True 
+                    count.save()
 
 
 
 
-def mask(user):
-    prefix = user.account.account_number[:2]
-    suffix = user.account.account_number[-2:]
 
-    return f'{prefix}{'*' * 6}{suffix}'
