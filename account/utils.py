@@ -1,7 +1,7 @@
 from .models import Account, All_User_Transaction, DividendAccount
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from .twillo import send_sms
+from .sms_send import send_sms
 
 class All:
     def __init__(self, agent):
