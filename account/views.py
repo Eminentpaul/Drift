@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 import json
 from .forms import UserUpdateForm
-from .sms_send import send_sms
+from .twillo import send_sms
 
 
 # Create your views here.

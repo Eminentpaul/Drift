@@ -2,7 +2,7 @@ from django.db import models
 from user_auth.models import User
 from shortuuid.django_fields import ShortUUIDField
 from django.shortcuts import get_object_or_404
-from .sms_send import send_sms 
+from .twillo import send_sms 
 # from .utils import mask
 
 
